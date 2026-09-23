@@ -46,8 +46,12 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+    <!-- v2.0 CANARY BANNER -->
+    <div style="background:#16a34a;color:#fff;text-align:center;padding:10px;font-weight:700;font-size:16px;">
+        🚀 QuickCharge v2.0 — Now with faster recharges! (Canary Release)
+    </div>
     <!-- Header -->
-    <header class="gradient-bg text-black py-6 shadow-lg">
+    <header class="gradient-bg text-white py-6 shadow-lg">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
@@ -221,6 +225,91 @@
                     <div class="text-5xl mb-4">🎯</div>
                     <h4 class="text-xl font-bold text-gray-800 mb-2">Best Offers</h4>
                     <p class="text-gray-600">Get exclusive cashback and offers on every recharge</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recharge Calculator Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">Recharge Calculator</h3>
+                <p class="text-gray-600 text-lg">See exactly what you'll pay, live — with taxes, fees and cashback</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Inputs -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 card-hover">
+                    <div class="space-y-6">
+                        <!-- Base amount -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Recharge Amount (₹)</label>
+                            <input type="range" id="calcAmount" min="10" max="2000" step="10" value="299"
+                                class="w-full accent-purple-600">
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="text-xs text-gray-500">₹10</span>
+                                <input type="number" id="calcAmountInput" value="299" min="10" max="2000"
+                                    class="w-28 text-center text-lg font-bold border-2 border-gray-200 rounded-lg py-2 focus:border-purple-500 focus:outline-none">
+                                <span class="text-xs text-gray-500">₹2000</span>
+                            </div>
+                        </div>
+
+                        <!-- Payment method fee -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Payment Method</label>
+                            <select id="calcPayment" class="w-full border-2 border-gray-200 rounded-xl py-3 px-4 focus:border-purple-500 focus:outline-none">
+                                <option value="0">UPI — No convenience fee</option>
+                                <option value="1.5">Card — 1.5% convenience fee</option>
+                                <option value="0.5">Wallet — 0.5% convenience fee</option>
+                            </select>
+                        </div>
+
+                        <!-- Coupon -->
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Coupon Code</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="calcCoupon" placeholder="Try SAVE10, FLAT50, QUICK20"
+                                    class="flex-1 border-2 border-gray-200 rounded-xl py-3 px-4 uppercase focus:border-purple-500 focus:outline-none">
+                                <button type="button" id="applyCoupon"
+                                    class="bg-purple-600 text-white px-5 rounded-xl font-semibold hover:bg-purple-700 transition-colors">Apply</button>
+                            </div>
+                            <p id="couponMsg" class="text-sm mt-2 h-5"></p>
+                        </div>
+
+                        <!-- GST toggle -->
+                        <div class="flex items-center justify-between">
+                            <label for="calcGst" class="text-sm font-semibold text-gray-700">Include 18% GST</label>
+                            <input type="checkbox" id="calcGst" checked class="w-5 h-5 accent-purple-600">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Bill Breakdown -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 card-hover flex flex-col">
+                    <h4 class="text-xl font-bold text-gray-800 mb-6">Bill Summary</h4>
+                    <div class="space-y-3 flex-1">
+                        <div class="flex justify-between text-gray-700">
+                            <span>Base amount</span><span id="sumBase">₹0.00</span>
+                        </div>
+                        <div class="flex justify-between text-gray-700">
+                            <span>Convenience fee</span><span id="sumFee">₹0.00</span>
+                        </div>
+                        <div class="flex justify-between text-gray-700">
+                            <span>GST (18%)</span><span id="sumGst">₹0.00</span>
+                        </div>
+                        <div class="flex justify-between text-green-600 font-medium">
+                            <span>Cashback / Discount</span><span id="sumDiscount">-₹0.00</span>
+                        </div>
+                        <hr class="my-2">
+                        <div class="flex justify-between text-2xl font-bold text-gray-900">
+                            <span>Total Payable</span><span id="sumTotal">₹0.00</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 bg-purple-50 rounded-xl p-4 text-center">
+                        <p class="text-sm text-gray-600">You save</p>
+                        <p id="sumSave" class="text-2xl font-bold text-purple-600">₹0.00</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -411,7 +500,7 @@
                     </div>
                     <div class="flex justify-between">
                         <span class="font-medium">Transaction ID:</span>
-                        <span class="text-blue-600">#${Math.random().toString(36).substr(2, 9).toUpperCase()}</span>
+                        <span class="text-blue-600">#${Math.random().toString(36).slice(2, 11).toUpperCase()}</span>
                     </div>
                 </div>
             `;
@@ -425,6 +514,83 @@
             modal.classList.add('hidden');
             modal.classList.remove('flex');
         }
+
+        /* ---------------- Recharge Calculator ---------------- */
+        const COUPONS = {
+            SAVE10: { type: 'percent', value: 10, label: '10% off' },
+            QUICK20: { type: 'percent', value: 20, label: '20% off' },
+            FLAT50:  { type: 'flat',    value: 50, label: '₹50 off' }
+        };
+        let activeCoupon = null;
+
+        const calcAmount = document.getElementById('calcAmount');
+        const calcAmountInput = document.getElementById('calcAmountInput');
+        const calcPayment = document.getElementById('calcPayment');
+        const calcGst = document.getElementById('calcGst');
+        const calcCoupon = document.getElementById('calcCoupon');
+        const couponMsg = document.getElementById('couponMsg');
+
+        const money = n => '₹' + n.toFixed(2);
+        const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
+
+        function recalculate() {
+            const base = clamp(Number(calcAmountInput.value) || 0, 0, 2000);
+            const feeRate = parseFloat(calcPayment.value) || 0;
+            const fee = base * (feeRate / 100);
+
+            let discount = 0;
+            if (activeCoupon) {
+                discount = activeCoupon.type === 'percent'
+                    ? base * (activeCoupon.value / 100)
+                    : Math.min(activeCoupon.value, base);
+            }
+
+            const taxable = Math.max(base + fee - discount, 0);
+            const gst = calcGst.checked ? taxable * 0.18 : 0;
+            const total = taxable + gst;
+
+            document.getElementById('sumBase').textContent = money(base);
+            document.getElementById('sumFee').textContent = money(fee);
+            document.getElementById('sumGst').textContent = money(gst);
+            document.getElementById('sumDiscount').textContent = '-' + money(discount);
+            document.getElementById('sumTotal').textContent = money(total);
+            document.getElementById('sumSave').textContent = money(discount);
+        }
+
+        // Sync slider <-> number input
+        calcAmount.addEventListener('input', () => {
+            calcAmountInput.value = calcAmount.value;
+            recalculate();
+        });
+        calcAmountInput.addEventListener('input', () => {
+            const v = clamp(Number(calcAmountInput.value) || 0, 10, 2000);
+            calcAmount.value = v;
+            recalculate();
+        });
+        calcPayment.addEventListener('change', recalculate);
+        calcGst.addEventListener('change', recalculate);
+
+        // Coupon apply
+        document.getElementById('applyCoupon').addEventListener('click', () => {
+            const code = calcCoupon.value.trim().toUpperCase();
+            if (!code) {
+                activeCoupon = null;
+                couponMsg.textContent = 'Coupon removed';
+                couponMsg.className = 'text-sm mt-2 h-5 text-gray-500';
+            } else if (COUPONS[code]) {
+                activeCoupon = COUPONS[code];
+                couponMsg.textContent = '✅ ' + code + ' applied — ' + activeCoupon.label;
+                couponMsg.className = 'text-sm mt-2 h-5 text-green-600';
+            } else {
+                activeCoupon = null;
+                couponMsg.textContent = '❌ Invalid coupon code';
+                couponMsg.className = 'text-sm mt-2 h-5 text-red-600';
+            }
+            recalculate();
+        });
+
+        // Initial render
+        recalculate();
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96e649c3d5c0cf00',t:'MTc1NTA2NzkzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
